@@ -33,9 +33,9 @@ basepath = os.path.dirname(__file__)
 filepath = os.path.abspath(os.path.join(basepath, "Data/"))
 directory_files = [pos_mask_files for pos_mask_files in os.listdir(filepath) if pos_mask_files.endswith('.png')]
 
-data = [
+data = {
 
-]
+}
 
 for x in range(0, len(directory_files)):
     # print(directory_files[x])
@@ -47,8 +47,8 @@ for x in range(0, len(directory_files)):
     img_capsulated_rgb = cv2.imread(img, cv2.IMREAD_COLOR)
     parent_tag = img_with_no_tag + size_of_img
     contourIndexNo = 0
-    listTest = {
-        img_with_no_tag + size_of_img: {
+
+    data[img_with_no_tag + size_of_img] = {
             'filename': img_with_no_tag,
             'size': size_of_img,
             'regions': [
@@ -59,9 +59,10 @@ for x in range(0, len(directory_files)):
                 'image_url': ''
             }
         }
-    }
+
+
     # print(*listTest, sep="{}")
-    data.append(listTest)
+    # data.append(listTest)
 
     k = 0  # enumerator for in
     # empty list
@@ -83,7 +84,7 @@ for x in range(0, len(directory_files)):
         approx = cv2.approxPolyDP(cnt, 0.009 * cv2.arcLength(cnt, True), True)
         # # draws boundary of contours.
         # cv2.drawContours(img2, [approx], 0, (0, 0, 255), 5)
-        data[maskIndexNo][parent_tag]['regions'].append({
+        data[parent_tag]['regions'].append({
             'shape_attributes': {
                 'name': 'polygon',
                 'all_points_x': [
@@ -113,7 +114,7 @@ for x in range(0, len(directory_files)):
                 my_list_point_y.append(y)
                 # String containing the co-ordinates.
                 # string = str(x) + " " + str(y)
-                d = data[maskIndexNo][parent_tag]['regions']
+                d = data[parent_tag]['regions']
                 d[contourIndexNo]['shape_attributes']['all_points_x'].append(my_list_point_x[k])
                 d[contourIndexNo]['shape_attributes']['all_points_y'].append(my_list_point_y[k])
                 # # text on remaining co-ordinates.
@@ -129,9 +130,8 @@ for x in range(0, len(directory_files)):
     # print("maskIndexNo: ", maskIndexNo)
 
 with io.open(
-        'C:\\Users\\sukruburak.cetin\\Desktop\\binarymask2json\\data.json',
+        'C:\\Users\\BURAK\\Desktop\\binarymask2json\\data.json',
         'w', encoding='utf8') as outfile:
-
     str_ = json.dumps(data, cls=NumpyEncoder)
     outfile.write(to_unicode(str_))
 
