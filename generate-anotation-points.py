@@ -10,7 +10,7 @@ try:
 except NameError:
     to_unicode = str
 
-font = cv2.FONT_HERSHEY_COMPLEX
+# font = cv2.FONT_HERSHEY_COMPLEX
 
 
 class NumpyEncoder(json.JSONEncoder):
@@ -30,7 +30,8 @@ size_of_img = 0
 maskIndexNo = 0
 contourIndexNo = 0
 basepath = os.path.dirname(__file__)
-filepath = os.path.abspath(os.path.join(basepath, "Data/"))
+# filepath = os.path.abspath(os.path.join(basepath, "Data/train"))
+filepath = os.path.abspath(os.path.join(basepath, "Data/val"))
 directory_files = [pos_mask_files for pos_mask_files in os.listdir(filepath) if pos_mask_files.endswith('.png')]
 
 data = {
@@ -40,9 +41,9 @@ data = {
 for x in range(0, len(directory_files)):
     # print(directory_files[x])
     # print(os.stat('Data\\' + directory_files[x]).st_size)
-    img = ("Data\\" + directory_files[x])
+    img = ("Data\\val\\" + directory_files[x])
     img_with_no_tag = directory_files[x]
-    size_of_img = str(os.stat('Data\\' + directory_files[x]).st_size)
+    size_of_img = str(os.stat('Data\\val\\' + directory_files[x]).st_size)
     img_capsulated = cv2.imread(img, cv2.IMREAD_GRAYSCALE)
     img_capsulated_rgb = cv2.imread(img, cv2.IMREAD_COLOR)
     parent_tag = img_with_no_tag + size_of_img
@@ -59,10 +60,6 @@ for x in range(0, len(directory_files)):
                 'image_url': ''
             }
         }
-
-
-    # print(*listTest, sep="{}")
-    # data.append(listTest)
 
     k = 0  # enumerator for in
     # empty list
@@ -130,7 +127,7 @@ for x in range(0, len(directory_files)):
     # print("maskIndexNo: ", maskIndexNo)
 
 with io.open(
-        'C:\\Users\\BURAK\\Desktop\\binarymask2json\\data.json',
+        'C:\\Users\\BURAK\\Desktop\\binarymask2json\\Data\\val\\via_region_data.json',
         'w', encoding='utf8') as outfile:
     str_ = json.dumps(data, cls=NumpyEncoder)
     outfile.write(to_unicode(str_))
