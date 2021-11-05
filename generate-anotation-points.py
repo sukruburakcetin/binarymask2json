@@ -62,12 +62,11 @@ for x in range(0, len(directory_files)):
         }
     }
 
-    k = 0  # enumerator for in
-    # empty list
+    k = 0  # enumerator to show the current index
+    # of filled list that include polygon points
+    # empty list to fill polygon co-vertices
     my_list_point_x = []
     my_list_point_y = []
-    whole_my_list_points_x = []
-    whole_my_list_points_y = []
     # Converting image to a binary image
     # ( black and white only image).
     _, threshold = cv2.threshold(img_capsulated, 110, 255, cv2.THRESH_BINARY)
