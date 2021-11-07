@@ -33,18 +33,20 @@ basepath = os.path.dirname(__file__)
 batch_mode = 0
 
 if batch_mode == 0:
-    filepath = os.path.abspath(os.path.join(basepath, "Data/train"))
+    filepath_masks = os.path.abspath(os.path.join(basepath, "Data/train"))
+    filepath_raws = os.path.abspath(os.path.join(basepath, "Data/raws"))
 else:
-    filepath = os.path.abspath(os.path.join(basepath, "Data/val"))
+    filepath_masks = os.path.abspath(os.path.join(basepath, "Data/val"))
+    filepath_raws = os.path.abspath(os.path.join(basepath, "Data/raws"))
 
-directory_files = [pos_mask_files for pos_mask_files in os.listdir(filepath) if pos_mask_files.endswith('.png')]
+directory_files = [pos_mask_files for pos_mask_files in os.listdir(filepath_masks) if pos_mask_files.endswith('.png')]
 
 data = {}
 
 for x in range(0, len(directory_files)):
-    img = (filepath + "\\" + directory_files[x])
+    img = (filepath_masks + "\\" + directory_files[x])
     img_with_no_tag = directory_files[x]
-    size_of_img = str(os.stat(filepath + "\\" + directory_files[x]).st_size)
+    size_of_img = str(os.stat(filepath_raws + "\\" + directory_files[x]).st_size)
     img_capsulated = cv2.imread(img, cv2.IMREAD_GRAYSCALE)
     img_capsulated_rgb = cv2.imread(img, cv2.IMREAD_COLOR)
     parent_tag = img_with_no_tag + size_of_img
@@ -52,7 +54,7 @@ for x in range(0, len(directory_files)):
 
     data[img_with_no_tag + size_of_img] = {
         'filename': img_with_no_tag,
-        'size': os.stat(filepath + '\\' + directory_files[x]).st_size,
+        'size': os.stat(filepath_raws + '\\' + directory_files[x]).st_size,
         'regions': [
         ],
         'file_attributes': {
@@ -74,7 +76,6 @@ for x in range(0, len(directory_files)):
     # Detecting contours in image.
     contours, _ = cv2.findContours(threshold, cv2.RETR_TREE,
                                    cv2.CHAIN_APPROX_SIMPLE)
-    counterCountInMask = str(len(contours))
 
     # Going through every contours found in the image.
     for cnt in contours:
@@ -116,7 +117,7 @@ for x in range(0, len(directory_files)):
     maskIndexNo = maskIndexNo + 1
 
 with io.open(
-        filepath + '\\via_region_data.json',
+        filepath_masks + '\\via_region_data.json',
         'w', encoding='utf8') as outfile:
     str_ = json.dumps(data, cls=NumpyEncoder)
     outfile.write(to_unicode(str_))
