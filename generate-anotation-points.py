@@ -29,15 +29,17 @@ maskIndexNo = 0
 contourIndexNo = 0
 basepath = os.path.dirname(__file__)
 
-# insert batch mode 0 for train
+# insert batch mode 0 for train-annotation-points generation, otherwise 1 for the validation
 batch_mode = 0
 
 if batch_mode == 0:
     filepath_masks = os.path.abspath(os.path.join(basepath, "Data/train"))
     filepath_raws = os.path.abspath(os.path.join(basepath, "Data/raws"))
+    annotation_location = os.path.abspath(os.path.join(basepath, "Data/train-annotation-store"))
 else:
     filepath_masks = os.path.abspath(os.path.join(basepath, "Data/val"))
     filepath_raws = os.path.abspath(os.path.join(basepath, "Data/raws"))
+    annotation_location = os.path.abspath(os.path.join(basepath, "Data/validation-annotation-store"))
 
 directory_files = [pos_mask_files for pos_mask_files in os.listdir(filepath_masks) if pos_mask_files.endswith('.png')]
 
@@ -79,7 +81,7 @@ for x in range(0, len(directory_files)):
 
     # Going through every contours found in the image.
     for cnt in contours:
-        approx = cv2.approxPolyDP(cnt, 0.009 * cv2.arcLength(cnt, True), True)
+        approx = cv2.approxPolyDP(cnt, 0.001 * cv2.arcLength(cnt, True), True)
         data[parent_tag]['regions'].append({
             'shape_attributes': {
                 'name': 'polygon',
@@ -117,7 +119,7 @@ for x in range(0, len(directory_files)):
     maskIndexNo = maskIndexNo + 1
 
 with io.open(
-        filepath_masks + '\\via_region_data.json',
+        annotation_location + '\\via_region_data.json',
         'w', encoding='utf8') as outfile:
     str_ = json.dumps(data, cls=NumpyEncoder)
     outfile.write(to_unicode(str_))

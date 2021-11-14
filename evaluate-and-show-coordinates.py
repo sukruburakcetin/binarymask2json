@@ -2,12 +2,12 @@ import os
 import cv2
 
 basepath = os.path.dirname(__file__)
-filepath = os.path.abspath(os.path.join(basepath, "Data/masks"))
+filepath = os.path.abspath(os.path.join(basepath, "Data/masks-cleaned"))
 directory_files = [pos_mask_files for pos_mask_files in os.listdir(filepath) if pos_mask_files.endswith('.png')]
 font = cv2.FONT_HERSHEY_COMPLEX
 
 for currentImg in range(0, len(directory_files)):
-    img_mask = ("Data\\masks\\" + directory_files[currentImg])
+    img_mask = ("Data\\masks-cleaned\\" + directory_files[currentImg])
     img_raw = ("Data\\raws\\" + directory_files[currentImg])
     img_with_no_tag = directory_files[currentImg]
     img_capsulated_grayscale = cv2.imread(img_mask, cv2.IMREAD_GRAYSCALE)
@@ -24,7 +24,7 @@ for currentImg in range(0, len(directory_files)):
     # print(counterCountInMask)
     # Going through every contours found in the image.
     for cnt in contours:
-        approx = cv2.approxPolyDP(cnt, 0.009 * cv2.arcLength(cnt, True), True)
+        approx = cv2.approxPolyDP(cnt, 0.004 * cv2.arcLength(cnt, True), True)
         # # draws boundary of contours.
         cv2.drawContours(img_capsulated_rgb, [approx], 0, (0, 0, 255), 1)
 
@@ -48,5 +48,5 @@ for currentImg in range(0, len(directory_files)):
             i = i + 1
     # cv2.imshow('test.png', img_capsulated_rgb)
     # cv2.waitKey(0)
-    cv2.imwrite("Data\\raws-with-points\\" + str(currentImg) + ".png", img_capsulated_rgb)
+    cv2.imwrite("Data\\raws-with-points\\_" + str(directory_files[currentImg]), img_capsulated_rgb)
 print("done")
